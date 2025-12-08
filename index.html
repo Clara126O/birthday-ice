@@ -13,10 +13,11 @@
 
         body {
             font-family: 'Microsoft YaHei', 'Segoe UI Emoji', Arial, sans-serif;
-            overflow-x: hidden;
+            overflow: hidden; /* 防止出现滚动条 */
             background: #000;
-            /* 隐藏系统默认鼠标 */
-            cursor: none;
+            cursor: none; /* 隐藏默认鼠标 */
+            width: 100vw;
+            height: 100vh;
         }
 
         /* --- 🌟 蓝色星星鼠标 🌟 --- */
@@ -24,27 +25,18 @@
             position: fixed;
             top: 0; left: 0;
             width: 30px; height: 30px;
-            /* 蓝色渐变背景 */
             background: linear-gradient(135deg, #00ffff 0%, #0077ff 100%);
-            /* 裁剪成五角星形状 */
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            /* 居中定位 */
             transform: translate(-50%, -50%);
-            pointer-events: none; /* 让鼠标穿透 */
+            pointer-events: none;
             z-index: 10000;
-            /* 发光滤镜 */
             filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.8));
-            /* 旋转动画 */
             animation: star-spin 4s linear infinite;
         }
-
-        /* 星星旋转动画 */
         @keyframes star-spin {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
-
-        /* 点击时星星变小 */
         body:active #star-cursor {
             width: 20px; height: 20px;
             filter: drop-shadow(0 0 15px rgba(0, 255, 255, 1));
@@ -53,14 +45,11 @@
         /* --- 欢迎页样式 --- */
         #welcome-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; align-items: center;
             z-index: 1000;
             transition: opacity 1s;
         }
@@ -73,7 +62,7 @@
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
             animation: bounceIn 1.2s;
             max-width: 90%;
-            cursor: default; /* 按钮区域恢复默认鼠标，防止点不到 */
+            cursor: default;
         }
 
         @keyframes bounceIn {
@@ -90,7 +79,6 @@
             animation: pulse 2s infinite;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.08); }
@@ -116,44 +104,52 @@
             font-weight: bold;
             margin-top: 20px;
         }
-
         .start-btn:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 50px rgba(255, 107, 157, 0.7);
         }
 
-        /* --- 画布样式 --- */
+        /* --- 全屏蓝屏图层 --- */
+        #bsod-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #0078D7;
+            z-index: 5000;
+            display: none;
+            color: white;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 10vw;
+            user-select: none;
+            cursor: none;
+        }
+
+        /* --- 画布样式：全屏铺满 --- */
         #main-canvas {
             display: block;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border: 3px solid #333;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            max-width: 95vw;
-            max-height: 95vh;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 10;
         }
 
-        /* --- 对话框样式 --- */
+        /* --- 沉浸式文字显示区 --- */
         .text-display {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            color: white;
-            font-size: clamp(16px, 3vw, 24px);
+            color: #ff6b9d;
+            text-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+            font-size: clamp(24px, 4vw, 40px);
+            font-weight: bold;
             text-align: center;
-            width: 85%;
-            max-width: 800px;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.85);
-            border-radius: 20px;
-            border: 2px solid rgba(255, 107, 157, 0.5);
+            width: 100%;
+            padding: 0 20px;
+            background: transparent;
             display: none;
             z-index: 100;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .typing-cursor::after {
@@ -170,14 +166,12 @@
 
         .firework {
             position: fixed;
-            width: 6px;
-            height: 6px;
+            width: 6px; height: 6px;
             border-radius: 50%;
             pointer-events: none;
             animation: explode 1.2s ease-out forwards;
             z-index: 90;
         }
-
         @keyframes explode {
             0% { transform: translate(0, 0); opacity: 1; }
             100% { transform: translate(var(--x), var(--y)); opacity: 0; }
@@ -190,7 +184,6 @@
             pointer-events: none;
             z-index: 200;
         }
-
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(-500px) rotate(360deg); opacity: 0; }
@@ -209,56 +202,47 @@
             100% { transform: translate(0); }
         }
 
-        /* --- 3D 旋转相册立方体 --- */
+        /* 3D 旋转相册 - 自适应位置 */
         .cube-container {
             display: none;
             position: fixed;
-            top: 40%;
+            /* 修改为相对视口高度的百分比，适配长屏和宽屏 */
+            top: 35%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 150px;
-            height: 150px;
+            width: 150px; height: 150px;
             perspective: 1000px;
             z-index: 200;
         }
-
         .cube {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             position: relative;
             transform-style: preserve-3d;
             animation: spin 12s infinite linear;
         }
-
         .cube-face {
             position: absolute;
-            width: 150px;
-            height: 150px;
+            width: 150px; height: 150px;
             border: 2px solid rgba(255, 192, 203, 0.8);
             background: rgba(255, 105, 180, 0.2);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            font-weight: bold;
+            align-items: center; justify-content: center;
+            font-size: 30px; font-weight: bold;
             color: #ff1493;
             box-shadow: 0 0 15px rgba(255, 20, 147, 0.6);
             user-select: none;
         }
-
         .face-front  { transform: rotateY(0deg) translateZ(75px); }
         .face-back   { transform: rotateY(180deg) translateZ(75px); }
         .face-right  { transform: rotateY(90deg) translateZ(75px); }
         .face-left   { transform: rotateY(-90deg) translateZ(75px); }
         .face-top    { transform: rotateX(90deg) translateZ(75px); }
         .face-bottom { transform: rotateX(-90deg) translateZ(75px); }
-
         @keyframes spin {
             from { transform: rotateX(0deg) rotateY(0deg); }
             to { transform: rotateX(360deg) rotateY(360deg); }
         }
 
-        /* --- ❄️ 冰晶粒子特效 ❄️ --- */
         .ice-particle {
             position: fixed;
             pointer-events: none;
@@ -270,7 +254,6 @@
             opacity: 1;
             user-select: none;
         }
-
         @keyframes melt-down {
             0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
             100% { transform: translate(0, 30px) scale(0.2) rotate(180deg); opacity: 0; }
@@ -278,15 +261,35 @@
 
         @media (max-width: 768px) {
             .welcome-content { padding: 40px 30px; }
-            #main-canvas { width: 100vw !important; height: auto !important; }
-            /* 手机上不显示自定义鼠标 */
             #star-cursor { display: none; }
             body { cursor: auto; }
+            .cube-container { width: 100px; height: 100px; }
+            .cube-face { width: 100px; height: 100px; transform: rotateY(0deg) translateZ(50px); }
+            /* 需要重新定义面的 translateZ 以适应小方块 */
+            .face-front  { transform: rotateY(0deg) translateZ(50px); }
+            .face-back   { transform: rotateY(180deg) translateZ(50px); }
+            .face-right  { transform: rotateY(90deg) translateZ(50px); }
+            .face-left   { transform: rotateY(-90deg) translateZ(50px); }
+            .face-top    { transform: rotateX(90deg) translateZ(50px); }
+            .face-bottom { transform: rotateX(-90deg) translateZ(50px); }
         }
     </style>
 </head>
 <body>
     <div id="star-cursor"></div>
+
+    <div id="bsod-screen">
+        <div style="font-size: clamp(60px, 15vw, 100px); margin-bottom: 20px;">:(</div>
+        <div style="font-size: clamp(16px, 4vw, 24px); line-height: 1.5;">
+            你的电脑遇到问题，需要重新启动。<br>
+            我们需要收集错误信息，然后你可以重启。<br><br>
+            <span style="font-size: 20px;">85% 完成</span><br><br>
+            <div style="font-size: clamp(12px, 3vw, 16px); margin-top: 20px;">
+                终止代码: FRIENDSHIP_OVERFLOW<br>
+                (友谊溢出异常)
+            </div>
+        </div>
+    </div>
 
     <div id="welcome-screen">
         <div class="welcome-content">
@@ -297,14 +300,14 @@
             <p style="font-size: clamp(0.9em, 2.5vw, 1.2em); color: #666; margin-bottom: 40px;">
                 为你准备了一个特别的惊喜~ ✨
             </p>
-            <button class="start-btn" onclick="startShow()">🎁 打开惊喜</button>
+            <button class="start-btn" onclick="triggerFullScreenAndStart()">🎁 打开惊喜</button>
             <p style="margin-top: 30px; color: #999; font-size: clamp(0.8em, 2vw, 0.95em);">
                 💡 提示:建议全屏观看,记得打开声音哦!
             </p>
         </div>
     </div>
 
-    <canvas id="main-canvas" width="800" height="600"></canvas>
+    <canvas id="main-canvas"></canvas>
 
     <div id="text-display" class="text-display"></div>
 
@@ -334,41 +337,36 @@
         const ctx = canvas.getContext('2d');
         let currentAudio = null;
 
-        // --- 🌟 鼠标跟随逻辑 🌟 ---
+        // 核心：强制设置画布大小为窗口大小
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
         const starCursor = document.getElementById('star-cursor');
         document.addEventListener('mousemove', (e) => {
             starCursor.style.left = e.clientX + 'px';
             starCursor.style.top = e.clientY + 'px';
         });
 
-        // --- ❄️ 若冰专属拖尾特效 ❄️ ---
         document.addEventListener('mousemove', function(e) {
-            if (Math.random() > 0.3) return; // 频率控制
-
+            if (Math.random() > 0.3) return;
             const ice = document.createElement('div');
             ice.className = 'ice-particle';
-
-            // 随机文字
             const shapes = ['❄️', '权', '冰', '❆', '若', '✨'];
             ice.innerText = shapes[Math.floor(Math.random() * shapes.length)];
-
             ice.style.left = (e.clientX - 10) + 'px';
             ice.style.top = (e.clientY - 10) + 'px';
-
             const size = Math.random() * 15 + 10;
             ice.style.fontSize = size + 'px';
-
             const colors = ['#a5f2f3', '#ffffff', '#00ffff', '#e0ffff'];
             ice.style.color = colors[Math.floor(Math.random() * colors.length)];
-
             document.body.appendChild(ice);
-
-            setTimeout(() => {
-                ice.remove();
-            }, 1000);
+            setTimeout(() => { ice.remove(); }, 1000);
         });
 
-        // 音频控制
         function playAudio(id) {
             if (currentAudio) {
                 currentAudio.pause();
@@ -387,13 +385,11 @@
             textDiv.style.display = 'block';
             textDiv.style.opacity = '0';
             textDiv.innerHTML = text;
-
             return new Promise(resolve => {
                 setTimeout(() => {
                     textDiv.style.transition = 'opacity 0.5s';
                     textDiv.style.opacity = '1';
                 }, 50);
-
                 setTimeout(() => {
                     textDiv.style.opacity = '0';
                     setTimeout(() => {
@@ -408,19 +404,16 @@
         function createFirework(x, y) {
             const colors = ['#ff6b9d', '#c471ed', '#ffd700', '#00ff00', '#00bfff', '#ff1493', '#00ced1'];
             const particles = 40;
-
             for (let i = 0; i < particles; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'firework';
                 particle.style.left = x + 'px';
                 particle.style.top = y + 'px';
                 particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-
                 const angle = (Math.PI * 2 * i) / particles;
                 const velocity = 60 + Math.random() * 120;
                 particle.style.setProperty('--x', Math.cos(angle) * velocity + 'px');
                 particle.style.setProperty('--y', Math.sin(angle) * velocity + 'px');
-
                 document.body.appendChild(particle);
                 setTimeout(() => particle.remove(), 1200);
             }
@@ -437,22 +430,36 @@
             setTimeout(() => heart.remove(), 3000);
         }
 
+        // --- 修复点：蛋糕绘制逻辑 ---
         function drawCake() {
-            const gradient = ctx.createLinearGradient(0, 0, 0, 600);
+            // 1. 确保背景铺满整个当前窗口
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#ffc0cb');
             gradient.addColorStop(1, '#ffb3d9');
             ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 800, 600);
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // 2. 使用变换矩阵让蛋糕始终居中且大小合适
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+
+            // 计算缩放比例：根据屏幕较小的一边来决定蛋糕大小
+            // 基准尺寸设为 800x600，保证在手机上也能看到完整蛋糕
+            const scale = Math.min(canvas.width / 800, canvas.height / 800);
+            ctx.scale(scale, scale);
+
+            // 将绘图原点移回逻辑左上角，这样下面的硬编码坐标就能复用
+            ctx.translate(-400, -300);
+
+            // --- 蛋糕主体绘制 ---
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
             for (let i = 0; i < 30; i++) {
                 const x = Math.random() * 800;
-                const y = Math.random() * 200;
+                const y = Math.random() * 600; // 扩大星星范围
                 ctx.beginPath();
                 ctx.arc(x, y, 2, 0, Math.PI * 2);
                 ctx.fill();
             }
-
             const plateColors = ['#FFD700', '#FF69B4', '#87CEEB'];
             plateColors.forEach((color, i) => {
                 ctx.strokeStyle = color;
@@ -462,14 +469,12 @@
                 ctx.lineTo(600 - i * 15, 460 - i * 15);
                 ctx.stroke();
             });
-
             const layers = [
                 { color: '#FFFACD', height: 80, shadow: '#e6d7a3' },
                 { color: '#FFA07A', height: 60, shadow: '#e68a61' },
                 { color: '#87CEFA', height: 40, shadow: '#6db3e1' },
                 { color: '#DDA0DD', height: 20, shadow: '#c487c4' }
             ];
-
             let currentY = 450;
             layers.forEach(layer => {
                 ctx.fillStyle = layer.shadow;
@@ -481,17 +486,14 @@
                 ctx.strokeRect(280, currentY - layer.height, 240, layer.height);
                 currentY -= layer.height;
             });
-
             const candleX = [320, 360, 400, 440, 480];
             const candleColors = ['#FF6347', '#FFD700', '#7CFC00', '#00BFFF', '#BA55D3'];
-
             candleX.forEach((x, i) => {
                 const grad = ctx.createLinearGradient(x - 4, 230, x + 4, 270);
                 grad.addColorStop(0, candleColors[i]);
                 grad.addColorStop(1, candleColors[i] + '99');
                 ctx.fillStyle = grad;
                 ctx.fillRect(x - 4, 230, 8, 40);
-
                 const flameGrad = ctx.createRadialGradient(x, 223, 0, x, 223, 8);
                 flameGrad.addColorStop(0, '#ffff00');
                 flameGrad.addColorStop(0.5, '#ffa500');
@@ -500,13 +502,11 @@
                 ctx.beginPath();
                 ctx.arc(x, 223, 8, 0, Math.PI * 2);
                 ctx.fill();
-
                 ctx.fillStyle = 'yellow';
                 ctx.beginPath();
                 ctx.arc(x, 223, 4, 0, Math.PI * 2);
                 ctx.fill();
             });
-
             ctx.fillStyle = '#DC143C';
             for (let x = 300; x < 520; x += 30) {
                 ctx.beginPath();
@@ -518,40 +518,34 @@
                 ctx.fill();
                 ctx.fillStyle = '#DC143C';
             }
-
             ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
             ctx.shadowBlur = 10;
             ctx.shadowOffsetX = 3;
             ctx.shadowOffsetY = 3;
-
             ctx.fillStyle = '#ff1493';
             ctx.font = 'bold 36px Microsoft YaHei';
             ctx.textAlign = 'center';
             ctx.fillText('🎂 祝你生日快乐! 🎂', 400, 520);
-
             ctx.shadowBlur = 5;
             ctx.font = 'bold 24px Microsoft YaHei';
             ctx.fillStyle = 'orange';
             ctx.fillText('Best Friend Forever', 400, 560);
             ctx.shadowColor = 'transparent';
+
+            ctx.restore();
         }
 
-        function showBSOD() {
-            ctx.fillStyle = '#0078D7';
-            ctx.fillRect(0, 0, 800, 600);
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 120px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText(':(', 100, 200);
-            ctx.font = '26px Microsoft YaHei';
-            ctx.fillText('你的电脑遇到问题，需要重新启动。', 100, 280);
-            ctx.font = '20px Microsoft YaHei';
-            ctx.fillText('我们需要收集错误信息，然后你可以重启。', 100, 320);
-            ctx.fillText('85% 完成', 100, 380);
-            ctx.font = 'bold 18px Arial';
-            ctx.fillText('终止代码: FRIENDSHIP_OVERFLOW', 100, 440);
-            ctx.font = '16px Microsoft YaHei';
-            ctx.fillText('(友谊溢出异常)', 100, 470);
+        // 新增：触发浏览器原生全屏
+        function triggerFullScreenAndStart() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => console.log(err));
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+            startShow();
         }
 
         async function startShow() {
@@ -559,8 +553,9 @@
             document.getElementById('welcome-screen').style.opacity = '0';
             setTimeout(() => { document.getElementById('welcome-screen').style.display = 'none'; }, 1000);
 
+            // 初始黑色背景
             ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, 800, 600);
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             await showText('(⊙_⊙)？ 咦？！', 2000);
             await showText('这黑灯瞎火的是哪儿？<br>我怎么是骚粉色的？！', 2500);
@@ -576,8 +571,12 @@
             await new Promise(r => setTimeout(r, 400));
             document.body.classList.remove('glitch-mode');
 
-            showBSOD();
+            document.getElementById('bsod-screen').style.display = 'block';
             await new Promise(resolve => setTimeout(resolve, 4500));
+
+            document.getElementById('bsod-screen').style.display = 'none';
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             await showText('( ͡° ͜ʖ ͡°)✧ 嘿嘿<br>吓到了没？开个玩笑！', 2500);
             await showText('( ﾟ∀ﾟ) ﾉ<br>Yo! 寿星你好，我是Tommy龟！', 2500);
@@ -585,12 +584,14 @@
 
             playAudio('bgm-happy');
             await showText('φ(゜▽゜*)♪<br>Music~ 这下对味了！<br>上蛋糕！', 2800);
+
+            // 绘制蛋糕
             drawCake();
 
             const fireworkCount = 60;
             for (let i = 0; i < fireworkCount; i++) {
                 setTimeout(() => {
-                    createFirework(150 + Math.random() * 500, 50 + Math.random() * 150);
+                    createFirework(150 + Math.random() * (canvas.width - 300), 50 + Math.random() * 150);
                     if (i % 5 === 0) createFloatingHeart();
                 }, i * 120);
             }
@@ -599,44 +600,78 @@
 
             playAudio('bgm-sweet');
 
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, 800, 600);
-            const bgGrad = ctx.createLinearGradient(0, 0, 0, 600);
+            // --- 结尾场景绘制 ---
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             bgGrad.addColorStop(0, '#fff5f7');
             bgGrad.addColorStop(1, '#ffe4e8');
             ctx.fillStyle = bgGrad;
-            ctx.fillRect(0, 0, 800, 600);
+            // 确保背景铺满
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             document.getElementById('gift-cube').style.display = 'block';
 
+            // --- 核心修复：结尾文字坐标改为动态计算 ---
+            const centerY = canvas.height / 2;
+            const centerX = canvas.width / 2;
+            // 根据屏幕宽度计算字体大小
+            const baseFontSize = Math.min(canvas.width, canvas.height) * 0.05;
+            // 文字基础位置：在屏幕高度的 60% 处开始（因为立方体在 35%）
+            const textStartY = canvas.height * 0.6;
+
             ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
             ctx.shadowBlur = 8;
-            ctx.fillStyle = '#ff1493';
-            ctx.font = 'bold 38px Microsoft YaHei';
             ctx.textAlign = 'center';
-            ctx.fillText('🎉 祝权若冰生日快乐 🎉', 400, 500);
 
-            ctx.font = '24px Microsoft YaHei';
+            ctx.fillStyle = '#ff1493';
+            ctx.font = `bold ${baseFontSize}px Microsoft YaHei`;
+            ctx.fillText('🎉 祝权若冰生日快乐 🎉', centerX, textStartY);
+
+            ctx.font = `${baseFontSize * 0.6}px Microsoft YaHei`;
             ctx.fillStyle = '#666';
-            ctx.fillText('苟富贵，勿相忘~', 400, 540);
+            ctx.fillText('苟富贵，勿相忘~', centerX, textStartY + baseFontSize * 1.2);
 
-            ctx.font = '20px Microsoft YaHei';
+            ctx.font = `${baseFontSize * 0.5}px Microsoft YaHei`;
             ctx.fillStyle = '#999';
-            ctx.fillText('费了好几亿个脑细胞啊 ฅ՞•ﻌ•՞ฅ', 400, 580);
+            ctx.fillText('费了好几亿个脑细胞啊 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
 
             for (let i = 0; i < 20; i++) {
                 setTimeout(() => {
-                    createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight * 0.4);
+                    createFirework(Math.random() * canvas.width, Math.random() * canvas.height * 0.4);
                     createFloatingHeart();
                 }, i * 200);
             }
         }
 
+        // 监听窗口调整，如果用户在动画结束后改变窗口大小，重新绘制最后的场景以免黑屏
         window.addEventListener('resize', () => {
-            const canvas = document.getElementById('main-canvas');
-            if (window.innerWidth < 768) {
-                canvas.style.width = '100vw';
-                canvas.style.height = 'auto';
+            // 这里我们只简单处理结尾场景的重绘，防止调整窗口变白
+            // 严谨的做法应该记录当前动画状态，这里简化处理
+            if(document.getElementById('gift-cube').style.display === 'block') {
+                 const bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                bgGrad.addColorStop(0, '#fff5f7');
+                bgGrad.addColorStop(1, '#ffe4e8');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const centerX = canvas.width / 2;
+                const baseFontSize = Math.min(canvas.width, canvas.height) * 0.05;
+                const textStartY = canvas.height * 0.6;
+
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                ctx.shadowBlur = 8;
+                ctx.textAlign = 'center';
+
+                ctx.fillStyle = '#ff1493';
+                ctx.font = `bold ${baseFontSize}px Microsoft YaHei`;
+                ctx.fillText('🎉 祝权若冰生日快乐 🎉', centerX, textStartY);
+
+                ctx.font = `${baseFontSize * 0.6}px Microsoft YaHei`;
+                ctx.fillStyle = '#666';
+                ctx.fillText('苟富贵，勿相忘~', centerX, textStartY + baseFontSize * 1.2);
+
+                ctx.font = `${baseFontSize * 0.5}px Microsoft YaHei`;
+                ctx.fillStyle = '#999';
+                ctx.fillText('费了好几亿个脑细胞啊 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
             }
         });
     </script>
