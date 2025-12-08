@@ -192,7 +192,7 @@
             </p>
             <button class="start-btn" onclick="startShow()">🎁 打开惊喜</button>
             <p style="margin-top: 30px; color: #999; font-size: clamp(0.8em, 2vw, 0.95em);">
-                💡 提示:建议全屏观看效果更佳
+                💡 提示:建议全屏观看,记得打开声音哦!
             </p>
         </div>
     </div>
@@ -203,9 +203,33 @@
     <!-- 文字显示区 -->
     <div id="text-display" class="text-display"></div>
 
+    <!-- 背景音乐 -->
+    <audio id="bgm-front" preload="auto">
+        <source src="media/front.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgm-happy" preload="auto">
+        <source src="media/Happy.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgm-sweet" preload="auto">
+        <source src="media/sweet.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         const canvas = document.getElementById('main-canvas');
         const ctx = canvas.getContext('2d');
+        let currentAudio = null;
+
+        // 音频控制
+        function playAudio(id) {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            currentAudio = document.getElementById(id);
+            if (currentAudio) {
+                currentAudio.play().catch(e => console.log('音频播放:', e.message));
+            }
+        }
 
         // 显示文字
         function showText(text, duration = 3000) {
@@ -258,14 +282,12 @@
 
         // 画蛋糕
         function drawCake() {
-            // 粉色背景
             const gradient = ctx.createLinearGradient(0, 0, 0, 600);
             gradient.addColorStop(0, '#ffc0cb');
             gradient.addColorStop(1, '#ffb3d9');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 800, 600);
             
-            // 装饰星星
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
             for (let i = 0; i < 30; i++) {
                 const x = Math.random() * 800;
@@ -275,7 +297,6 @@
                 ctx.fill();
             }
             
-            // 盘子(三层)
             const plateColors = ['#FFD700', '#FF69B4', '#87CEEB'];
             plateColors.forEach((color, i) => {
                 ctx.strokeStyle = color;
@@ -286,7 +307,6 @@
                 ctx.stroke();
             });
             
-            // 蛋糕层(渐变)
             const layers = [
                 { color: '#FFFACD', height: 80, shadow: '#e6d7a3' },
                 { color: '#FFA07A', height: 60, shadow: '#e68a61' },
@@ -296,35 +316,26 @@
             
             let currentY = 450;
             layers.forEach(layer => {
-                // 阴影
                 ctx.fillStyle = layer.shadow;
                 ctx.fillRect(285, currentY - layer.height + 5, 230, layer.height);
-                
-                // 主体
                 ctx.fillStyle = layer.color;
                 ctx.fillRect(280, currentY - layer.height, 240, layer.height);
-                
-                // 边框装饰
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(280, currentY - layer.height, 240, layer.height);
-                
                 currentY -= layer.height;
             });
             
-            // 蜡烛
             const candleX = [320, 360, 400, 440, 480];
             const candleColors = ['#FF6347', '#FFD700', '#7CFC00', '#00BFFF', '#BA55D3'];
             
             candleX.forEach((x, i) => {
-                // 蜡烛身(渐变)
                 const grad = ctx.createLinearGradient(x - 4, 230, x + 4, 270);
                 grad.addColorStop(0, candleColors[i]);
                 grad.addColorStop(1, candleColors[i] + '99');
                 ctx.fillStyle = grad;
                 ctx.fillRect(x - 4, 230, 8, 40);
                 
-                // 火焰(闪烁效果)
                 const flameGrad = ctx.createRadialGradient(x, 223, 0, x, 223, 8);
                 flameGrad.addColorStop(0, '#ffff00');
                 flameGrad.addColorStop(0.5, '#ffa500');
@@ -334,21 +345,17 @@
                 ctx.arc(x, 223, 8, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // 火焰中心
                 ctx.fillStyle = 'yellow';
                 ctx.beginPath();
                 ctx.arc(x, 223, 4, 0, Math.PI * 2);
                 ctx.fill();
             });
             
-            // 樱桃
             ctx.fillStyle = '#DC143C';
             for (let x = 300; x < 520; x += 30) {
                 ctx.beginPath();
                 ctx.arc(x, 290, 8, 0, Math.PI * 2);
                 ctx.fill();
-                
-                // 樱桃高光
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
                 ctx.beginPath();
                 ctx.arc(x - 2, 288, 3, 0, Math.PI * 2);
@@ -356,7 +363,6 @@
                 ctx.fillStyle = '#DC143C';
             }
             
-            // 祝福语(多层文字阴影)
             ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
             ctx.shadowBlur = 10;
             ctx.shadowOffsetX = 3;
@@ -371,11 +377,9 @@
             ctx.font = 'bold 24px Microsoft YaHei';
             ctx.fillStyle = 'orange';
             ctx.fillText('Best Friend Forever', 400, 560);
-            
             ctx.shadowColor = 'transparent';
         }
 
-        // 画爱心
         function drawHeart(x, y, size, color = '#ff1493') {
             const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * 2);
             gradient.addColorStop(0, color);
@@ -384,69 +388,40 @@
             
             ctx.beginPath();
             ctx.moveTo(x, y + size * 0.3);
-            
-            // 左半边
-            ctx.bezierCurveTo(
-                x, y - size * 0.3,
-                x - size * 1.5, y - size * 0.3,
-                x - size * 1.5, y + size * 0.5
-            );
-            ctx.bezierCurveTo(
-                x - size * 1.5, y + size * 1.3,
-                x, y + size * 2,
-                x, y + size * 2.5
-            );
-            
-            // 右半边
-            ctx.bezierCurveTo(
-                x, y + size * 2,
-                x + size * 1.5, y + size * 1.3,
-                x + size * 1.5, y + size * 0.5
-            );
-            ctx.bezierCurveTo(
-                x + size * 1.5, y - size * 0.3,
-                x, y - size * 0.3,
-                x, y + size * 0.3
-            );
-            
+            ctx.bezierCurveTo(x, y - size * 0.3, x - size * 1.5, y - size * 0.3, x - size * 1.5, y + size * 0.5);
+            ctx.bezierCurveTo(x - size * 1.5, y + size * 1.3, x, y + size * 2, x, y + size * 2.5);
+            ctx.bezierCurveTo(x, y + size * 2, x + size * 1.5, y + size * 1.3, x + size * 1.5, y + size * 0.5);
+            ctx.bezierCurveTo(x + size * 1.5, y - size * 0.3, x, y - size * 0.3, x, y + size * 0.3);
             ctx.fill();
         }
 
-        // 蓝屏效果
         function showBSOD() {
             ctx.fillStyle = '#0078D7';
             ctx.fillRect(0, 0, 800, 600);
-            
-            // 悲伤表情
             ctx.fillStyle = 'white';
             ctx.font = 'bold 120px Arial';
             ctx.textAlign = 'left';
             ctx.fillText(':(', 100, 200);
-            
-            // 文字
             ctx.font = '26px Microsoft YaHei';
             ctx.fillText('你的电脑遇到问题，需要重新启动。', 100, 280);
-            
             ctx.font = '20px Microsoft YaHei';
             ctx.fillText('我们需要收集错误信息，然后你可以重启。', 100, 320);
-            
-            // 进度
             ctx.fillText('85% 完成', 100, 380);
-            
             ctx.font = 'bold 18px Arial';
             ctx.fillText('终止代码: FRIENDSHIP_OVERFLOW', 100, 440);
             ctx.font = '16px Microsoft YaHei';
             ctx.fillText('(友谊溢出异常)', 100, 470);
         }
 
-        // 主流程
         async function startShow() {
             document.getElementById('welcome-screen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('welcome-screen').style.display = 'none';
             }, 1000);
             
-            // 1. 黑屏开场
+            // 播放开场音乐
+            playAudio('bgm-front');
+            
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, 800, 600);
             
@@ -460,48 +435,42 @@
             await showText('他竟然熬夜把那些Bug都修完了...<br>是个狠人！', 2500);
             await showText('(ฅ˙Ⱉ˙ฅ)<br>那行吧，老龟就助他一臂之力', 2500);
             
-            // 2. 蓝屏恶作剧
             showBSOD();
             await new Promise(resolve => setTimeout(resolve, 4500));
             
             await showText('( ͡° ͜ʖ ͡°)✧ 嘿嘿<br>吓到了没？开个玩笑！', 2500);
             await showText('( ﾟ∀ﾟ) ﾉ<br>Yo! 寿星你好，我是Tommy龟！', 2500);
             await showText('既然气氛到了<br>那必须整得"有排面"一点！', 2500);
+            
+            // 切换音乐
+            playAudio('bgm-happy');
+            
             await showText('φ(゜▽゜*)♪<br>Music~ 这下对味了！<br>上蛋糕！', 2800);
             
-            // 3. 蛋糕场景
             drawCake();
             
-            // 烟花秀
             const fireworkCount = 60;
             for (let i = 0; i < fireworkCount; i++) {
                 setTimeout(() => {
-                    createFirework(
-                        150 + Math.random() * 500,
-                        50 + Math.random() * 150
-                    );
-                    
-                    // 每隔几发放飘心
-                    if (i % 5 === 0) {
-                        createFloatingHeart();
-                    }
+                    createFirework(150 + Math.random() * 500, 50 + Math.random() * 150);
+                    if (i % 5 === 0) createFloatingHeart();
                 }, i * 120);
             }
             
             await new Promise(resolve => setTimeout(resolve, 8000));
             
-            // 4. 结束画面
+            // 切换结尾音乐
+            playAudio('bgm-sweet');
+            
             ctx.fillStyle = '#fff';
             ctx.fillRect(0, 0, 800, 600);
             
-            // 背景渐变
             const bgGrad = ctx.createLinearGradient(0, 0, 0, 600);
             bgGrad.addColorStop(0, '#fff5f7');
             bgGrad.addColorStop(1, '#ffe4e8');
             ctx.fillStyle = bgGrad;
             ctx.fillRect(0, 0, 800, 600);
             
-            // 多个爱心
             const heartPositions = [
                 { x: 400, y: 180, size: 60, color: '#ff1493' },
                 { x: 250, y: 200, size: 40, color: '#ff69b4' },
@@ -514,7 +483,6 @@
                 drawHeart(pos.x, pos.y, pos.size, pos.color);
             });
             
-            // 文字
             ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
             ctx.shadowBlur = 8;
             ctx.shadowOffsetX = 2;
@@ -537,22 +505,16 @@
             ctx.font = 'italic 16px Arial';
             ctx.fillStyle = '#bbb';
             ctx.fillText('- 来自广西第一好人的真诚祝福 -', 400, 560);
-            
             ctx.shadowColor = 'transparent';
             
-            // 最后的烟花
             for (let i = 0; i < 20; i++) {
                 setTimeout(() => {
-                    createFirework(
-                        Math.random() * window.innerWidth,
-                        Math.random() * window.innerHeight * 0.4
-                    );
+                    createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight * 0.4);
                     createFloatingHeart();
                 }, i * 200);
             }
         }
         
-        // 响应式调整
         window.addEventListener('resize', () => {
             const canvas = document.getElementById('main-canvas');
             if (window.innerWidth < 768) {
