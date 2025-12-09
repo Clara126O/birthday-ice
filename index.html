@@ -322,15 +322,20 @@
         </div>
     </div>
 
-    <audio id="bgm-front" preload="auto">
-        <source src="media/front.mp3" type="audio/mpeg">
+ <audio id="bgm-front" preload="auto">
+        <source src="./media/front.mp3" type="audio/mpeg">
     </audio>
 
     <audio id="bgm-minghappy" preload="auto">
-        <source src="media/minghappy.mp3" type="audio/mpeg">
+        <source src="./media/minghappy.mp3" type="audio/mpeg">
     </audio>
+
     <audio id="bgm-happy" preload="auto">
-        <source src="media/Happy.mp3" type="audio/mpeg">
+        <source src="./media/Happy.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="bgm-sweet" preload="auto">
+        <source src="./media/sweet.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -536,16 +541,42 @@
             ctx.restore();
         }
 
-        // 新增：触发浏览器原生全屏
+        // 🌟 修复版：只解锁后面用到的歌，不动第一首
+        function silentUnlockAudio() {
+            // 这里只写后面才用到的歌名 (bgm-front 不要写在这里！)
+            const futureAudioIds = ['bgm-minghappy', 'bgm-happy', 'bgm-sweet']; // 加上 sweet 防止结尾没声音
+
+            futureAudioIds.forEach(id => {
+                const audio = document.getElementById(id);
+                if (audio) {
+                    // 1. 静音
+                    audio.muted = true;
+                    // 2. 播放一下
+                    audio.play().then(() => {
+                        // 3. 只要浏览器允许了，马上暂停并复位
+                        audio.pause();
+                        audio.currentTime = 0;
+                        // 4. 取消静音，等待正式调用
+                        audio.muted = false;
+                    }).catch(e => console.log("解锁失败或已被占用:", e));
+                }
+            });
+        }
+
+        // 修改后的启动函数
         function triggerFullScreenAndStart() {
+            // 1. 全屏
             const elem = document.documentElement;
             if (elem.requestFullscreen) {
                 elem.requestFullscreen().catch(err => console.log(err));
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
+            } else if (elem.webkitRequestFullscreen) {
                 elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
             }
+
+            // 2. 悄悄解锁后面的歌
+            silentUnlockAudio();
+
+            // 3. 开始流程 (startShow 里面会直接播放 bgm-front，这在点击事件里是绝对安全的)
             startShow();
         }
 
