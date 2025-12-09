@@ -11,7 +11,6 @@
             box-sizing: border-box;
         }
 
-        
         body {
             font-family: 'Microsoft YaHei', 'Segoe UI Emoji', Arial, sans-serif;
             overflow: hidden; /* 防止出现滚动条 */
@@ -314,12 +313,12 @@
 
     <div id="gift-cube" class="cube-container">
         <div class="cube">
-            <div class="cube-face face-front">帅</div>
-            <div class="cube-face face-back">富</div>
-            <div class="cube-face face-right">美</div>
-            <div class="cube-face face-left">酷</div>
-            <div class="cube-face face-top">牛</div>
-            <div class="cube-face face-bottom">666</div>
+            <div class="cube-face face-front">身常健</div>
+            <div class="cube-face face-back">业长兴</div>
+            <div class="cube-face face-right">爱相随</div>
+            <div class="cube-face face-left">心无忧</div>
+            <div class="cube-face face-top">友相伴</div>
+            <div class="cube-face face-bottom">梦皆甜</div>
         </div>
     </div>
 
@@ -623,7 +622,7 @@
             const discoStartTime = Date.now();
             const discoDuration = 16000; // 持续 16秒，对应前摇时长
             //在这里加入了名字，它们会和表情包一起乱飞
-            const discoEmojis = ['🐢', '🎂', '🎵', '👯', '🪩', '✨', '😎', '🎸', '🎹', '🕺', '💃', '权', '若', '冰'];
+            const discoEmojis = ['🐢', '🎂', '🎵', '👯', '🪩', '✨', '😎', '🎸', '🎹', '🕺', '💃','🧊', '权', '若', '冰'];
 
             await new Promise(resolve => {
                 const interval = setInterval(() => {
@@ -685,7 +684,7 @@
 
             // --- 阶段 2: 切换正题 (迪斯科结束后执行这里) ---
             // 此时屏幕已经是全黑的了，直接出字，反差感拉满
-            await showText('Σ(っ °Д °;)っ<br>不对搞错了<br>再来', 2500);
+            await showText('Σ(っ °Д °;)っ<br>不对搞错了!<br>再来!', 2500);
             playAudio('bgm-happy'); // 切换到 happy 音乐
             await showText('φ(゜▽゜*)♪<br>Music~ 这下对味了！<br>上蛋糕！', 2500);
 
@@ -742,11 +741,11 @@
 
             ctx.font = `${baseFontSize * 0.6}px Microsoft YaHei`;
             ctx.fillStyle = '#666';
-            ctx.fillText('苟富贵，勿相忘~', centerX, textStartY + baseFontSize * 1.2);
+            ctx.fillText('常喜乐，多安宁~', centerX, textStartY + baseFontSize * 1.2);
 
             ctx.font = `${baseFontSize * 0.5}px Microsoft YaHei`;
             ctx.fillStyle = '#999';
-            ctx.fillText('改一次就要看一遍，费了好几亿个细胞啊 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
+            ctx.fillText('改一次就要看一遍，谁知道我看了多少遍 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
 
             for (let i = 0; i < 20; i++) {
                 setTimeout(() => {
@@ -781,15 +780,13 @@
 
                 ctx.font = `${baseFontSize * 0.6}px Microsoft YaHei`;
                 ctx.fillStyle = '#666';
-                ctx.fillText('苟富贵，勿相忘~', centerX, textStartY + baseFontSize * 1.2);
+                ctx.fillText('常喜乐，多安宁~', centerX, textStartY + baseFontSize * 1.2);
 
                 ctx.font = `${baseFontSize * 0.5}px Microsoft YaHei`;
                 ctx.fillStyle = '#999';
-                ctx.fillText('改一次就要看一遍，费了好几亿个细胞啊 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
+                ctx.fillText('改一次就要看一遍，谁知道我看了多少遍 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
             }
         });
     </script>
 </body>
 </html>
-
-
