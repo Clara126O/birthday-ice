@@ -325,11 +325,12 @@
     <audio id="bgm-front" preload="auto">
         <source src="media/front.mp3" type="audio/mpeg">
     </audio>
+
+    <audio id="bgm-minghappy" preload="auto">
+        <source src="media/minghappy.mp3" type="audio/mpeg">
+    </audio>
     <audio id="bgm-happy" preload="auto">
         <source src="media/Happy.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="bgm-sweet" preload="auto">
-        <source src="media/sweet.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -430,7 +431,7 @@
             setTimeout(() => heart.remove(), 3000);
         }
 
-        // --- 修复点：蛋糕绘制逻辑 ---
+         // --- 修复点：蛋糕绘制逻辑 ---
         function drawCake() {
             // 1. 确保背景铺满整个当前窗口
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
@@ -582,21 +583,102 @@
             await showText('( ﾟ∀ﾟ) ﾉ<br>Yo! 寿星你好，我是Tommy龟！', 2500);
             await showText('既然气氛到了<br>那必须整得"有排面"一点！', 2500);
 
-            playAudio('bgm-happy');
-            await showText('φ(゜▽゜*)♪<br>Music~ 这下对味了！<br>上蛋糕！', 2800);
+            // --- 阶段 1: 播放前摇 minghappy (土味迪斯科版) ---
+            await showText('来上 BGM！', 1500);
+            playAudio('bgm-minghappy');
 
-            // 绘制蛋糕
-            drawCake();
+            // === 土味迪斯科：群魔乱舞模式 ===
+            const discoStartTime = Date.now();
+            const discoDuration = 16000; // 持续 16秒，对应前摇时长
+            //在这里加入了名字，它们会和表情包一起乱飞
+            const discoEmojis = ['🐢', '🎂', '🎵', '👯', '🪩', '✨', '😎', '🎸', '🎹', '🕺', '💃', '权', '若', '冰'];
 
-            const fireworkCount = 60;
+            await new Promise(resolve => {
+                const interval = setInterval(() => {
+                    const elapsed = Date.now() - discoStartTime;
+
+                    // 时间到，立刻结束并黑屏
+                    if (elapsed >= discoDuration) {
+                        clearInterval(interval);
+                        // 🌟 关键：强制清屏变黑，为后面的“搞错了”做铺垫
+                        ctx.fillStyle = '#000';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        resolve();
+                        return;
+                    }
+
+                    // 1. 背景：疯狂闪烁 (迪斯科灯光)
+                    const hue = Math.floor(Math.random() * 360);
+                    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // 2. 绘制满屏乱飞的元素 (包含名字)
+                    for (let i = 0; i < 30; i++) {
+                        ctx.save();
+                        const x = Math.random() * canvas.width;
+                        const y = Math.random() * canvas.height;
+                        const size = Math.random() * 120 + 40; // 字体稍微调大一点
+                        ctx.font = `bold ${size}px "Microsoft YaHei", Arial`; // 加上粗体让名字更显眼
+                        const angle = Math.random() * Math.PI * 2;
+
+                        ctx.translate(x, y);
+                        ctx.rotate(angle);
+
+                        const emoji = discoEmojis[Math.floor(Math.random() * discoEmojis.length)];
+                        ctx.fillStyle = '#FFF';
+                        ctx.fillText(emoji, 0, 0);
+                        ctx.restore();
+                    }
+
+                    // 3. 中间文字抖动
+                    ctx.save();
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    const shakeX = (Math.random() - 0.5) * 40;
+                    const shakeY = (Math.random() - 0.5) * 40;
+                    const scale = 1 + Math.random() * 0.5;
+
+                    ctx.scale(scale, scale);
+                    ctx.font = 'bold 60px "Microsoft YaHei"';
+                    ctx.fillStyle = 'white';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.strokeStyle = 'black';
+                    ctx.lineWidth = 8;
+                    ctx.strokeText("💃 接着奏乐 接着舞 🕺", shakeX, shakeY);
+                    ctx.fillText("💃 接着奏乐 接着舞 🕺", shakeX, shakeY);
+                    ctx.restore();
+
+                }, 80); // 80ms 刷新一次，节奏感最强
+            });
+
+            // --- 阶段 2: 切换正题 (迪斯科结束后执行这里) ---
+            // 此时屏幕已经是全黑的了，直接出字，反差感拉满
+            await showText('Σ(っ °Д °;)っ<br>不对搞错了<br>再来', 2500);
+            playAudio('bgm-happy'); // 切换到 happy 音乐
+            await showText('φ(゜▽゜*)♪<br>Music~ 这下对味了！<br>上蛋糕！', 2500);
+
+            // --- 阶段 3: 同时放音乐 + 画蛋糕 (接原来的代码) ---
+
+            // --- 阶段 3: 同时放音乐 + 画蛋糕 ---
+
+            drawCake();             // 立即画出全屏蛋糕
+
+            // 撒一些烟花助兴 (为了配合长时间展示，稍微拉长烟花间隔)
+            const fireworkCount = 150;
             for (let i = 0; i < fireworkCount; i++) {
                 setTimeout(() => {
+                    // 随机位置放烟花
                     createFirework(150 + Math.random() * (canvas.width - 300), 50 + Math.random() * 150);
+                    // 偶尔飘爱心
                     if (i % 5 === 0) createFloatingHeart();
-                }, i * 120);
+                }, i * 400); // 这里的 400 控制烟花释放的稀疏程度，持续此时长会比较久
             }
 
-            await new Promise(resolve => setTimeout(resolve, 8000));
+            // --- 阶段 4: 保持蛋糕显示 1分10秒 (70000毫秒) ---
+            // 这里是仅仅“等待”，蛋糕会一直留在屏幕上
+            await new Promise(resolve => setTimeout(resolve, 70000));
+
+
 
             playAudio('bgm-sweet');
 
@@ -632,7 +714,7 @@
 
             ctx.font = `${baseFontSize * 0.5}px Microsoft YaHei`;
             ctx.fillStyle = '#999';
-            ctx.fillText('费了好几亿个脑细胞啊 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
+            ctx.fillText('改一次就要看一遍，费了好几亿个细胞啊 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
 
             for (let i = 0; i < 20; i++) {
                 setTimeout(() => {
@@ -671,7 +753,7 @@
 
                 ctx.font = `${baseFontSize * 0.5}px Microsoft YaHei`;
                 ctx.fillStyle = '#999';
-                ctx.fillText('费了好几亿个脑细胞啊 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
+                ctx.fillText('改一次就要看一遍，费了好几亿个细胞啊 ฅ՞•ﻌ•՞ฅ', centerX, textStartY + baseFontSize * 2.2);
             }
         });
     </script>
